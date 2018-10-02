@@ -11,12 +11,7 @@ todos = {
     "todo1": "Buy Milk"
 }
 
-def abort_if_todo_exists(todo_id):
-    if todo_id in todos:
-        abort(404, message="Todo {} already exist".format(todo_id))
-
 def abort_if_todo_doesnt_exist(todo_id):
-    print(todos)
     if todo_id not in todos:
         abort(404, message="Todo {} doesn't exist".format(todo_id))
 
@@ -43,6 +38,10 @@ class Todo(Resource):
         todos[todo_id] = request.form['task']
         return {todo_id: todos[todo_id]}
 
+    def delete(self, todo_id):
+        abort_if_todo_doesnt_exist(todo_id)
+        del todos[todo_id]
+        return todos, 200
 
 api.add_resource(TodoList, '/')
 api.add_resource(Todo, '/<string:todo_id>')

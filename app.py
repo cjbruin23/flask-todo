@@ -7,9 +7,7 @@ api = Api(app)
 parser = reqparse.RequestParser()
 parser.add_argument('task')
 
-todos = {
-    "todo1": "Buy Milk"
-}
+todos = {}
 
 def abort_if_todo_doesnt_exist(todo_id):
     if todo_id not in todos:
@@ -22,10 +20,14 @@ class TodoList(Resource):
 
     def post(self):
         args = parser.parse_args()
-        todo_id = int(max(todos.keys()).lstrip('todo')) + 1
+        try:
+            todo_id = int(max(todos.keys()).lstrip('todo')) + 1
+        except:
+            todo_id = 1
         todo_id = 'todo%i' % todo_id
         todos[todo_id] = args['task']
-        return todos, 201
+        response = "Added to todos: {}".format(args['task'])
+        return response, 201
 
 
 class Todo(Resource):
